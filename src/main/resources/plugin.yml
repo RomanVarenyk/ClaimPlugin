@@ -1,0 +1,6 @@
+name: ClaimPlugin
+version: '${project.version}'
+main: com.github.ukraine1449.claimplugin.ClaimPlugin
+api-version: 1.17
+authors: [ Ukraine1449 ]
+description: A plugin to enable people to claim plots of land.
