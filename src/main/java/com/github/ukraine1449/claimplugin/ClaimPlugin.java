@@ -55,7 +55,7 @@ ArrayList<Location> cache = new ArrayList<Location>();
     public void createTableClaims()throws Exception{
         try{
             Connection con = getConnection();
-            PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS claimData(CID varchar(255), world varchar(255), pos1 varchar(255),pos2 varchar(255),UUID varchar(255), name varchar(255), PRIMARY KEY (CID))");
+            PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS claimData(CID varchar(255), world varchar(255), x1 int,x2 int,z1 int,z2 int,UUID varchar(255), name varchar(255), PRIMARY KEY (CID))");
             create.executeUpdate();
 
         }catch(Exception e){}
@@ -93,11 +93,11 @@ ArrayList<Location> cache = new ArrayList<Location>();
             }catch(Exception e){}
         }
     }
-    public void postCD(String UUID, int updateOrNew, String CID, String world, String pos1, String pos2, String newUUID, String name, String newName, int oldClaims) throws Exception{
+    public void postCD(String UUID, int updateOrNew, String CID, String world, int x1, int x2, int z1, int z2, String newUUID, String name, String newName, int oldClaims) throws Exception{
         if(updateOrNew == 0){
             try{
                 Connection con = getConnection();
-                PreparedStatement posted = con.prepareStatement("INSERT INTO claimData(CID, world, pos1, pos2, UUID, name) VALUES ('"+CID+", "+world+", "+pos1+", "+pos2+", "+UUID+", "+name+"')");
+                PreparedStatement posted = con.prepareStatement("INSERT INTO claimData(CID, world, x1, x2, z1, z2 UUID, name) VALUES ('"+CID+", "+world+", "+x1+", "+x2+","+z1+", "+z2+", "+UUID+", "+name+"')");
                 posted.executeUpdate();
             }catch(Exception e){}
             for(int i = 0; i< cache.size(); i++){
@@ -153,20 +153,23 @@ ArrayList<Location> cache = new ArrayList<Location>();
             }
         }return tbr;
     }
-    public void selectCD(String pos1, String pos2, String world, String CID) throws Exception {
+    public ArrayList<Integer> selectCD(int x1, int x2, int z1, int z2, String world, String CID) throws Exception {
+            ArrayList<Integer> coords = new ArrayList<Integer>();
             Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement("SELECT pos1, pos2 FROM userStats WHERE CID="+CID+" AND world="+world+"");
+            PreparedStatement statement = con.prepareStatement("SELECT x1,x2,z1,z2 FROM userStats WHERE CID="+CID+" AND world="+world+"");
             ResultSet result = statement.executeQuery();
-            String pos11 = "0";
-            String pos22 = "0";
-            while(result.next()){
-                pos11 = result.getString("pos1");
-                pos22 = result.getString("pos2");
-            }
-
-
-
-
-
+            int x11 = 0;
+            int x22 = 0;
+            int z11 = 0;
+            int z22 = 0;
+                x11 = result.getInt("x1");
+                coords.add(x11);
+                x22 = result.getInt("x2");
+                coords.add(x22);
+                z11 = result.getInt("z1");
+                coords.add(z11);
+                z22 = result.getInt("z2");
+                coords.add(z22);
+                return coords;
         }
 }
