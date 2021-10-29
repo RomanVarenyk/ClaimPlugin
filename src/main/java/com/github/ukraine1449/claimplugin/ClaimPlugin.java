@@ -1,5 +1,6 @@
 package com.github.ukraine1449.claimplugin;
 
+import com.github.ukraine1449.claimplugin.Events.BlockInteractEvent;
 import com.github.ukraine1449.claimplugin.Events.playerJoinEvent;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -8,9 +9,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public final class ClaimPlugin extends JavaPlugin {
-ArrayList<Location> cache = new ArrayList<Location>();
+public ArrayList<Location> cache = new ArrayList<Location>();
     @Override
     public void onEnable() {
+        cacheClear();
         try {
             createTableClaims();
             createTableUserdata();
@@ -19,6 +21,7 @@ ArrayList<Location> cache = new ArrayList<Location>();
         }
 
         getServer().getPluginManager().registerEvents(new playerJoinEvent(this), this);
+        getServer().getPluginManager().registerEvents(new BlockInteractEvent(this), this);
 
 
         getConfig().options().copyDefaults();
@@ -27,13 +30,29 @@ ArrayList<Location> cache = new ArrayList<Location>();
 
 
     }
-
+    public static void wait(int ms)
+    {
+        try
+        {
+            Thread.sleep(ms);
+        }
+        catch(InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+        }
+    }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
 
+public void cacheClear(){
+        while (true){
+           wait(18000);
+           cache.clear();
+        }
 
+}
 
     public Connection getConnection() throws Exception{
         String ip = getConfig().getString("ip");
@@ -51,7 +70,6 @@ ArrayList<Location> cache = new ArrayList<Location>();
         }catch(Exception e){}
         return null;
     }
-
     public void createTableClaims()throws Exception{
         try{
             Connection con = getConnection();
@@ -134,14 +152,14 @@ ArrayList<Location> cache = new ArrayList<Location>();
         }
 
     }
-    public long selectUD(String UUID, int getWhat) throws Exception {
-        long tbr = 0;
+    public int selectUD(String UUID, int getWhat) throws Exception {
+        int tbr = 0;
         if(getWhat == 0){
             Connection con = getConnection();
             PreparedStatement statement = con.prepareStatement("SELECT claimMax FROM userStats WHERE UUID="+UUID+"");
             ResultSet result = statement.executeQuery();
             while(result.next()){
-                tbr = result.getLong("claimMax");
+                tbr = result.getInt("claimMax");
             }
         }
         else if (getWhat == 1){
@@ -149,27 +167,27 @@ ArrayList<Location> cache = new ArrayList<Location>();
             PreparedStatement statement = con.prepareStatement("SELECT totalClaims FROM userStats WHERE UUID="+UUID+"");
             ResultSet result = statement.executeQuery();
             while(result.next()){
-                tbr = result.getLong("totalClaims");
+                tbr = result.getInt("totalClaims");
             }
         }return tbr;
     }
-    public ArrayList<Integer> selectCD(int x1, int x2, int z1, int z2, String world, String CID) throws Exception {
+    public ArrayList<Integer> selectCD(String world, String CID) throws Exception {
             ArrayList<Integer> coords = new ArrayList<Integer>();
             Connection con = getConnection();
             PreparedStatement statement = con.prepareStatement("SELECT x1,x2,z1,z2 FROM userStats WHERE CID="+CID+" AND world="+world+"");
             ResultSet result = statement.executeQuery();
-            int x11 = 0;
-            int x22 = 0;
-            int z11 = 0;
-            int z22 = 0;
-                x11 = result.getInt("x1");
-                coords.add(x11);
-                x22 = result.getInt("x2");
-                coords.add(x22);
-                z11 = result.getInt("z1");
-                coords.add(z11);
-                z22 = result.getInt("z2");
-                coords.add(z22);
+            int x1 = 0;
+            int x2 = 0;
+            int z1 = 0;
+            int z2 = 0;
+                x1 = result.getInt("x1");
+                coords.add(x1);
+                x2 = result.getInt("x2");
+                coords.add(x2);
+                z1 = result.getInt("z1");
+                coords.add(z1);
+                z2 = result.getInt("z2");
+                coords.add(z2);
                 return coords;
         }
 }
