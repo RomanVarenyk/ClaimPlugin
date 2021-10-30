@@ -1,5 +1,6 @@
 package com.github.ukraine1449.claimplugin;
 
+import com.github.ukraine1449.claimplugin.Commands.claimCommand;
 import com.github.ukraine1449.claimplugin.Events.BlockInteractEvent;
 import com.github.ukraine1449.claimplugin.Events.playerJoinEvent;
 import org.bukkit.Location;
@@ -26,7 +27,7 @@ public ArrayList<Location> cache = new ArrayList<Location>();
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
-        //getCommand("profileset").setExecutor(new description(this));
+        getCommand("claim").setExecutor(new claimCommand(this));
 
 
     }
