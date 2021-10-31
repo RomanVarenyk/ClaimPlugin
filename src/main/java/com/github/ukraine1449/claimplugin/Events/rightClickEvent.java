@@ -27,7 +27,7 @@ ClaimPlugin plugin;
                 if(!plugin.listOfPotClaims.containsKey(player.getUniqueId())){
                     plugin.listOfPotClaims.put(player.getUniqueId(), event.getClickedBlock().getLocation());
                 }else{
-                    plugin.postCD(player.getUniqueId().toString(), 0, event.getClickedBlock().getChunk().toString(), event.getClickedBlock().getWorld().toString(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockX(), event.getClickedBlock().getX(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockZ(), event.getClickedBlock().getZ(), null, "null", "null", 1);
+                    plugin.postCD(player.getUniqueId().toString(), 0, event.getClickedBlock().getChunk().toString(), event.getClickedBlock().getWorld().toString(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockX(), event.getClickedBlock().getX(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockZ(), event.getClickedBlock().getZ(), null, player.getName()+ "'s claim at " + event.getClickedBlock().getLocation(), "null", 1);
                 }
             }
         }
