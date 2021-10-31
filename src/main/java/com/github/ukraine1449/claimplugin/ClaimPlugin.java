@@ -8,9 +8,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public final class ClaimPlugin extends JavaPlugin {
 public ArrayList<Location> cache = new ArrayList<Location>();
+public HashMap<UUID, Location> listOfPotClaims = new HashMap<>();
     @Override
     public void onEnable() {
         cacheClear();
@@ -49,8 +52,8 @@ public ArrayList<Location> cache = new ArrayList<Location>();
 
 public void cacheClear(){
         while (true){
+            cache.clear();
            wait(18000);
-           cache.clear();
         }
 
 }
