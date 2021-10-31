@@ -10,6 +10,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import javax.sound.midi.SysexMessage;
+
 public class rightClickEvent implements Listener {
 ClaimPlugin plugin;
 
@@ -26,8 +28,15 @@ ClaimPlugin plugin;
 
                 if(!plugin.listOfPotClaims.containsKey(player.getUniqueId())){
                     plugin.listOfPotClaims.put(player.getUniqueId(), event.getClickedBlock().getLocation());
+                    player.sendMessage(ChatColor.GREEN + "Mark a second point");
                 }else{
-                    plugin.postCD(player.getUniqueId().toString(), 0, event.getClickedBlock().getChunk().toString(), event.getClickedBlock().getWorld().toString(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockX(), event.getClickedBlock().getX(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockZ(), event.getClickedBlock().getZ(), null, player.getName()+ "'s claim at " + event.getClickedBlock().getLocation(), "null", 1);
+                    //Add check for if there is less then or equal to ammount of blocks set in max. ask rickard maybe he knows? 2 points possibility of negatives.
+                    try{
+                        plugin.postCD(player.getUniqueId().toString(), 0, event.getClickedBlock().getChunk().toString(), event.getClickedBlock().getWorld().toString(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockX(), event.getClickedBlock().getX(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockZ(), event.getClickedBlock().getZ(), null, player.getName()+ "'s claim at " + event.getClickedBlock().getLocation(), "null", 1);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        player.sendMessage("Something went wrong with the claiming proccess. Please ask the admins to check the console for the error and contact Ukraine#1449 (discord) for support if issues persist");
+                    }
                 }
             }
         }
