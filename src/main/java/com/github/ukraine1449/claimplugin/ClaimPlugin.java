@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public final class ClaimPlugin extends JavaPlugin {
 public ArrayList<Location> cache = new ArrayList<Location>();
-public HashMap<UUID, Location> listOfPotClaims = new HashMap<>();
+public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
     @Override
     public void onEnable() {
         cacheClear();
@@ -34,8 +34,7 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<>();
 
 
     }
-    public static void wait(int ms)
-    {
+    public static void wait(int ms) {
         try
         {
             Thread.sleep(ms);
