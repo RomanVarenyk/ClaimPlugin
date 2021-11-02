@@ -4,3 +4,12 @@ main: com.github.ukraine1449.claimplugin.ClaimPlugin
 api-version: 1.17
 authors: [ Ukraine1449 ]
 description: A plugin to enable people to claim plots of land.
+commands:
+  claim:
+    description: Get a claim shovel.
+    permission: claims.claim
+    permission-message: You have to have claims.claim permission to use this command.
+  cma:
+    description: Add a new limit for claim area to a certain player.
+    permission: claims.cma
+    permission-message: You have to have claims.cma permission to use this command.
