@@ -1,9 +1,13 @@
 package com.github.ukraine1449.claimplugin;
 
+import com.github.ukraine1449.claimplugin.Commands.addClaimsMax;
 import com.github.ukraine1449.claimplugin.Commands.claimCommand;
 import com.github.ukraine1449.claimplugin.Events.BlockInteractEvent;
 import com.github.ukraine1449.claimplugin.Events.playerJoinEvent;
+import com.github.ukraine1449.claimplugin.Events.rightClickEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
@@ -26,11 +30,14 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
 
         getServer().getPluginManager().registerEvents(new playerJoinEvent(this), this);
         getServer().getPluginManager().registerEvents(new BlockInteractEvent(this), this);
+        getServer().getPluginManager().registerEvents(new rightClickEvent(this), this);
+
 
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
         getCommand("claim").setExecutor(new claimCommand(this));
+        getCommand("cma").setExecutor(new addClaimsMax(this));
 
 
     }
@@ -193,4 +200,7 @@ public void cacheClear(){
                 coords.add(z2);
                 return coords;
         }
+    public void errorOccur(Player player){
+        player.sendMessage(ChatColor.RED + "An error occured. Please ask admins to check console for errors. If errors persist, please contact Ukraine#1449 on discord or email ukraine1449@gmail.com for support. Or go to Plugins.world");
+    }
 }
