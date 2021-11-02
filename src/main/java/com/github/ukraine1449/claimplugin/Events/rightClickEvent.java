@@ -27,6 +27,13 @@ ClaimPlugin plugin;
                     plugin.listOfPotClaims.put(player.getUniqueId(), event.getClickedBlock().getLocation());
                     player.sendMessage(ChatColor.GREEN + "Mark a second point");
                 }else{
+                    int xTotal = plugin.listOfPotClaims.get(player.getUniqueId()).getBlockX() + event.getClickedBlock().getLocation().getBlockX();
+                    int zTotal = plugin.listOfPotClaims.get(player.getUniqueId()).getBlockZ() + event.getClickedBlock().getLocation().getBlockZ();
+                    if(xTotal+zTotal <= plugin.selectUD(player.getUniqueId().toString(), 0)){
+
+                    }else{
+                        player.sendMessage(ChatColor.DARK_AQUA + "You do not have enough claim blocks to claim this. If you believe this is a mistake please contact the server admins and if issues persist contact Ukraine#1449 on discord or ukraine1449@gmail.com");
+                    }
                     //Add check for if there is less then or equal to ammount of blocks set in max. ask rickard maybe he knows? 2 points possibility of negatives.
                     try{
                         plugin.postCD(player.getUniqueId().toString(), 0, event.getClickedBlock().getChunk().toString(), event.getClickedBlock().getWorld().toString(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockX(), event.getClickedBlock().getX(), plugin.listOfPotClaims.get(player.getUniqueId()).getBlockZ(), event.getClickedBlock().getZ(), null, player.getName()+ "'s claim at " + event.getClickedBlock().getLocation(), "null", 1);
