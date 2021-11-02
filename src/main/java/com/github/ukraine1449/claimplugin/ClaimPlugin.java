@@ -16,13 +16,15 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public final class ClaimPlugin extends JavaPlugin {
-public ArrayList<Location> cache = new ArrayList<Location>();
 public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
     @Override
     public void onEnable() {
-        cacheClear();
         try {
             createTableClaims();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             createTableUserdata();
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,28 +43,10 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
 
 
     }
-    public static void wait(int ms) {
-        try
-        {
-            Thread.sleep(ms);
-        }
-        catch(InterruptedException ex)
-        {
-            Thread.currentThread().interrupt();
-        }
-    }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
-
-public void cacheClear(){
-        while (true){
-            cache.clear();
-           wait(18000);
-        }
-
-}
 
     public Connection getConnection() throws Exception{
         String ip = getConfig().getString("ip");
@@ -85,7 +69,7 @@ public void cacheClear(){
             Connection con = getConnection();
             PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS claimData(CID varchar(255), world varchar(255), x1 int,x2 int,z1 int,z2 int,UUID varchar(255), name varchar(255), PRIMARY KEY (CID))");
             create.executeUpdate();
-
+            con.close();
         }catch(Exception e){}
     }
     public void createTableUserdata()throws Exception{
@@ -93,7 +77,7 @@ public void cacheClear(){
             Connection con = getConnection();
             PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS userClaimData(UUID varchar(255), claimMax BIGINT, totalClaims int, PRIMARY KEY (UUID))");
             create.executeUpdate();
-
+            con.close();
         }catch(Exception e){}
     }
     public void postUD(String UUID, int updateOrNew, long newLimit, int oldClaims) throws Exception{
@@ -105,12 +89,14 @@ public void cacheClear(){
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("INSERT INTO userClaimData(UUID, claimMax, totalClaims) VALUES ('"+UUID+", "+getConfig().getString("maxClaimStart")+", 0')");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
         }else if (updateOrNew == 1){
             try{
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("UPDATE userClaimData SET claimMax="+newLimit+" WHERE UUID="+UUID+"");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
         }else{
             int newClaims = oldClaims+1;
@@ -118,6 +104,7 @@ public void cacheClear(){
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("UPDATE userClaimData SET totalClaims="+newClaims+" WHERE UUID="+UUID+"");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
         }
     }
@@ -127,37 +114,36 @@ public void cacheClear(){
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("INSERT INTO claimData(CID, world, x1, x2, z1, z2 UUID, name) VALUES ('"+CID+", "+world+", "+x1+", "+x2+","+z1+", "+z2+", "+UUID+", "+name+"')");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
-            for(int i = 0; i< cache.size(); i++){
-                cache.remove(i);
-            }
         }else if(updateOrNew == 1){
             try{
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("UPDATE claimData SET UUID="+newUUID+" WHERE UUID="+UUID+"");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
         }else if(updateOrNew == 2){
             try{
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("UPDATE claimData SET name="+newName+" WHERE UUID="+UUID+" AND name="+name+"");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
         }
         else{
-            for(int i = 0; i< cache.size(); i++){
-                cache.remove(i);
-            }
             int newClaims = oldClaims-1;
             try{
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("DELETE FROM claimData WHERE UUID="+UUID+" AND CN="+name+"");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
             try{
                 Connection con = getConnection();
                 PreparedStatement posted = con.prepareStatement("UPDATE userClaimData SET totalClaims="+newClaims+" WHERE UUID="+UUID+"");
                 posted.executeUpdate();
+                con.close();
             }catch(Exception e){}
         }
 
@@ -171,6 +157,7 @@ public void cacheClear(){
             while(result.next()){
                 tbr = result.getInt("claimMax");
             }
+            con.close();
         }
         else if (getWhat == 1){
             Connection con = getConnection();
@@ -179,6 +166,7 @@ public void cacheClear(){
             while(result.next()){
                 tbr = result.getInt("totalClaims");
             }
+            con.close();
         }return tbr;
     }
     public ArrayList<Integer> selectCD(String world, String CID) throws Exception {
@@ -198,8 +186,9 @@ public void cacheClear(){
                 coords.add(z1);
                 z2 = result.getInt("z2");
                 coords.add(z2);
+        con.close();
                 return coords;
-        }
+    }
     public void errorOccur(Player player){
         player.sendMessage(ChatColor.RED + "An error occured. Please ask admins to check console for errors. If errors persist, please contact Ukraine#1449 on discord or email ukraine1449@gmail.com for support. Or go to Plugins.world");
     }
