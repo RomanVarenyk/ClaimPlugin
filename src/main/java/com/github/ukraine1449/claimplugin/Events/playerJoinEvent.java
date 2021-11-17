@@ -16,9 +16,8 @@ ClaimPlugin plugin;
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent event) throws Exception {
         Player player = event.getPlayer();
-        if(!player.hasPlayedBefore()){
-            plugin.postUD(player.getUniqueId().toString(), 0, 100, 10);
-        }
+        plugin.postUD(player.getUniqueId().toString(), 0, 100, 10);
+
     }
 
 }

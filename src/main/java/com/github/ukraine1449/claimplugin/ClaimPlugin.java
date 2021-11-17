@@ -21,10 +21,6 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
     public void onEnable() {
         try {
             createTableClaims();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
             createTableUserdata();
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +71,7 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
     public void createTableUserdata()throws Exception{
         try{
             Connection con = getConnection();
-            PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS userClaimData(UUID varchar(255), claimMax BIGINT, totalClaims int, PRIMARY KEY (UUID))");
+            PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS userClaimData(UUID varchar(255), claimMax BIGINT, totalClaims int,placeholder int, PRIMARY KEY (UUID))");
             create.executeUpdate();
             con.close();
         }catch(Exception e){}
@@ -87,7 +83,7 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
         if(updateOrNew ==0){
             try{
                 Connection con = getConnection();
-                PreparedStatement posted = con.prepareStatement("INSERT INTO userClaimData(UUID, claimMax, totalClaims) VALUES ('"+UUID+", "+getConfig().getString("maxClaimStart")+", 0')");
+                PreparedStatement posted = con.prepareStatement("INSERT INTO userClaimData(UUID, claimMax, totalClaims) VALUES ('"+UUID+", "+getConfig().getString("maxClaimStart")+", 0')ON DUPLICATE KEY UPDATE placeholder=1");
                 posted.executeUpdate();
                 con.close();
             }catch(Exception e){}
@@ -152,7 +148,7 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
         int tbr = 0;
         if(getWhat == 0){
             Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement("SELECT claimMax FROM userStats WHERE UUID="+UUID+"");
+            PreparedStatement statement = con.prepareStatement("SELECT claimMax FROM userClaimData WHERE UUID="+UUID+"");
             ResultSet result = statement.executeQuery();
             while(result.next()){
                 tbr = result.getInt("claimMax");
@@ -161,7 +157,7 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
         }
         else if (getWhat == 1){
             Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement("SELECT totalClaims FROM userStats WHERE UUID="+UUID+"");
+            PreparedStatement statement = con.prepareStatement("SELECT totalClaims FROM userClaimData WHERE UUID="+UUID+"");
             ResultSet result = statement.executeQuery();
             while(result.next()){
                 tbr = result.getInt("totalClaims");
@@ -172,7 +168,7 @@ public HashMap<UUID, Location> listOfPotClaims = new HashMap<UUID, Location>();
     public ArrayList<Integer> selectCD(String world, String CID) throws Exception {
             ArrayList<Integer> coords = new ArrayList<Integer>();
             Connection con = getConnection();
-            PreparedStatement statement = con.prepareStatement("SELECT x1,x2,z1,z2 FROM userStats WHERE CID="+CID+" AND world="+world+"");
+            PreparedStatement statement = con.prepareStatement("SELECT x1,x2,z1,z2 FROM claimData WHERE CID="+CID+" AND world="+world+"");
             ResultSet result = statement.executeQuery();
             int x1 = 0;
             int x2 = 0;

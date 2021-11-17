@@ -16,7 +16,6 @@ public class addClaimsMax implements CommandExecutor {
     ClaimPlugin plugin;
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if(sender instanceof Player){
             Player player = (Player) sender;
             Player target = Bukkit.getPlayerExact(args[0]);
